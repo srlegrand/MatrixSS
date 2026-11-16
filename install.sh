@@ -41,6 +41,9 @@ in_each_session() {
 }
 
 stop_running() {
+    local pid
+    # its children first: a sleep left behind would hold the session script's lock, and keep the new one from starting
+    for pid in $(pgrep -f "$SESSION" || true); do pkill -P "$pid" || true; done
     pkill -f "$SESSION" || true
     pkill -x xscreensaver || true
     pkill -x matrix-rain || true
@@ -287,11 +290,11 @@ while :; do
         [ $starts -lt 5 ] || exit 1
         starts=$((starts + 1))
         xscreensaver --no-splash 9>&- >> "$log" 2>&1 &
-        sleep 5
+        sleep 5 9>&-
         continue
     fi
     held_off && xscreensaver-command --deactivate >/dev/null 2>&1
-    sleep 60
+    sleep 60 9>&-   # without the lock, which is this script's alone
 done
 SESSION_EOF
 chmod 755 "$SESSION"
@@ -311,7 +314,7 @@ in_each_session setsid -f "$SESSION" > /dev/null 2>&1
 if ! pgrep -x plasmashell >/dev/null; then
     echo "  nobody is logged in; it starts at the next login"
 else
-    sleep 2
+    sleep 8   # on X11 the session script takes a few seconds to get xscreensaver up
     pgrep -x 'xscreensaver|swayidle' >/dev/null || echo "  it did not start; it should at the next login" >&2
 fi
 echo "done: matrix screensaver after $IDLE_MIN idle minutes on $(hostname)."
