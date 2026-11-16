@@ -1,0 +1,14 @@
+# The other machines, for deploy and test. Copy this file to machines.txt and replace the examples with yours.
+# ./find.sh (Linux, macOS) prints lines for the machines it finds on your network.
+#
+# name      what you call the machine; you pass it to deploy and test to pick machines
+# address   its IP address, or a name the network knows it by (nuc.local, main-pc.lan). Addresses given out by
+#           a router can change: give the machine a fixed one in the router, or use its name.
+# system    linux (Kubuntu: KDE Plasma on Ubuntu or Debian), windows (10 or 11) or macos
+# user      the account to log in to and install for; - is the same name as on this machine.
+#           On Windows it is the name of the folder under C:\Users, not the e-mail address of a Microsoft account.
+#
+# name            address          system    user
+living-room       192.168.1.20     linux     -
+office-pc         192.168.1.21     windows   anna
+macbook           macbook.local    macos     anna
